@@ -1,0 +1,15 @@
+[db]
+
+[db.test]
+host = "localhost"
+port = 5432
+username = "test"
+password = "test"
+database = "test"
+
+[db.prod]
+host = "localhost"
+port = 5432
+username = "prod"
+password = "prod"
+database = "prod"
