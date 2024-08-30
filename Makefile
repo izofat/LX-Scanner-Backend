@@ -24,3 +24,6 @@ lint:
 	@poetry run pylint lx_scanner_backend
 	@poetry run pylint tests
 	@poetry run bandit -r lx_scanner_backend
+
+test-db:
+	@poetry run pytest tests/db
