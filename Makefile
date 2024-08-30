@@ -1,8 +1,5 @@
 SHELL := /bin/bash
 PROJECT_NAME := LX-Scanner-Backend
-CURDIR := $(shell pwd)
-PATH_IMAGE ?= $(CURDIR)/tests/data/testocr.png
-LANGUAGE_IMAGE ?= en
 
 POETRY := ~/.local/bin/poetry
 
