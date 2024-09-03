@@ -4,4 +4,5 @@ from .controllers.user import UserController
 
 bp = Blueprint("api", __name__)
 
-bp.route("/users", methods=["POST"])(UserController.create_user)
+bp.route("/user/register", methods=["POST"])(UserController.create_user)
+bp.route("/user/login", methods=["POST"])(UserController.login_user)

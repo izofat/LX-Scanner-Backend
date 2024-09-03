@@ -14,6 +14,14 @@ class DbConnection:
             pool_name=config.POOL_NAME,
             pool_size=config.POOL_SIZE,
         )
+        self.conn = None
 
     def get_connection(self):
-        return self.connection.get_connection()
+        if self.conn is None or not self.conn.is_connected():
+            self.conn = self.connection.get_connection()
+        return self.conn
+
+    def close_connection(self):
+        if self.conn and self.conn.is_connected():
+            self.conn.close()
+            self.conn = None
