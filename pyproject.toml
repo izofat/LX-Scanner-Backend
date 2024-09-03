@@ -2,27 +2,24 @@
 name = "lx-scanner-backend"
 version = "0.1.0"
 description = ""
-authors = ["Gorkem Kacar <gorkemkacar12@gmail.com>"]
+authors = ["izofat <gorkemkacar12@gmail.com>"]
 readme = "README.md"
-
-[tool.poetry.scripts]
-lx-scanner-backend = "lx_scanner_backend.__main__:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
 mypy = "^1.11.2"
+asyncio = "^3.4.3"
+bandit = "^1.7.9"
+black = "^24.8.0"
 autoflake = "^2.3.1"
 isort = "^5.13.2"
-black = "^24.8.0"
-pylint = "^3.2.6"
-bandit = "^1.7.9"
-flask = "^3.0.3"
-pydantic = "^2.8.2"
-mysql-connector-python = "^9.0.0"
-toml = "^0.10.2"
-pydash = "^8.0.3"
 pytest = "^8.3.2"
-pytest-order = "^1.3.0"
+mysql-connector-python = "^9.0.0"
+pydash = "^8.0.3"
+toml = "^0.10.2"
+flask = "^3.0.3"
+jupyter = "^1.1.1"
+pylint = "^3.2.7"
 
 
 [build-system]

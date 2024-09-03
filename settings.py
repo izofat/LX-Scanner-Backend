@@ -24,6 +24,8 @@ class MySqlConfig:
     USER = pydash.get(config, f"db.{ENV}.username")
     PASSWORD = pydash.get(config, f"db.{ENV}.password")
     DATABASE = pydash.get(config, f"db.{ENV}.database")
+    POOL_SIZE = pydash.get(config, f"db.{ENV}.pool_size", 5)
+    POOL_NAME = pydash.get(config, f"db.{ENV}.pool_name", "pool")
 
 
 assert MySqlConfig.HOST, "Database host not found in config.toml"
@@ -31,3 +33,7 @@ assert MySqlConfig.PORT, "Database port not found in config.toml"
 assert MySqlConfig.USER, "Database user not found in config.toml"
 assert MySqlConfig.PASSWORD, "Database password not found in config.toml"
 assert MySqlConfig.DATABASE, "Database name not found in config.toml"
+
+api_port = pydash.get(config, f"api.{ENV}.port")
+
+assert api_port, "API port not found in config.toml"
