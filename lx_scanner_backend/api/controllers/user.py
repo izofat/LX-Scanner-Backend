@@ -1,7 +1,7 @@
 import pydash
 from flask import request
 
-from lx_scanner_backend.api import exceptions
+from lx_scanner_backend import exceptions
 from lx_scanner_backend.api.services.user import UserService
 
 

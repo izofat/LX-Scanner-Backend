@@ -43,6 +43,7 @@ class Query:
             userId INT,
             expectedOutput VARCHAR(300) NOT NULL,
             fileName VARCHAR(300) NOT NULL,
+            inputLanguage VARCHAR(30) DEFAULT 'en',
             FOREIGN KEY (userId) REFERENCES lxScanner.account(id)
             )
         """
@@ -75,3 +76,20 @@ class Query:
             SELECT username, password FROM account WHERE username = %s 
         """
         return self.execute_query(query, username)
+
+    def get_user_id(self, username: str):
+        query = """
+            SELECT id FROM account WHERE username = %s AND password = %s
+        """
+        return self.execute_query(query, username)
+
+    def insert_scanner_input(
+        self, user_id: int, expected_output: str, file_Name: str, input_language: str
+    ):
+        query = """
+            INSERT INTO scannerInput (userId, expectedOutput, fileName, inputLanguage)
+            VALUES (%s, %s, %s)
+        """
+        return self.execute_query(
+            query, user_id, expected_output, file_Name, input_language, is_commit=True
+        )

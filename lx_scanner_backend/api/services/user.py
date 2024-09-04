@@ -1,6 +1,6 @@
-from lx_scanner_backend.api import exceptions
-from lx_scanner_backend.db.models import User
+from lx_scanner_backend import exceptions
 from lx_scanner_backend.db.query import Query
+from lx_scanner_backend.models import User
 
 
 class UserService:
@@ -31,3 +31,5 @@ class UserService:
 
         if not is_pw_matched:
             raise exceptions.InvalidCredentials()
+
+        return user.id

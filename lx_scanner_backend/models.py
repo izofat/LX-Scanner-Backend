@@ -1,10 +1,13 @@
-import bcrypt
-from pydantic import BaseModel, field_validator
+from typing import Optional
 
-from lx_scanner_backend.api import exceptions
+import bcrypt
+from pydantic import BaseModel, Field, field_validator
+
+from lx_scanner_backend import exceptions
 
 
 class User(BaseModel):
+    id: Optional[int] = Field(default=None)
     username: str
     password: str
 
@@ -33,3 +36,27 @@ class User(BaseModel):
 
     def decrypt_password(self, decrypted_password: str):
         return bcrypt.checkpw(decrypted_password.encode(), self.password.encode())
+
+
+class ScannerInput(BaseModel):
+    id: int
+    user_id: int
+    expected_output: str
+    file_name: str
+    input_language: str = "en"
+
+    @field_validator("expected_output")
+    @classmethod
+    def is_expected_output_exist(cls, v):
+        if not v:
+            raise exceptions.ExpectedOutputNotExist()
+
+        return v
+
+    @field_validator("input_language")
+    @classmethod
+    def is_input_language_exist(cls, v):
+        if not v:
+            raise exceptions.InputLanguageNotExist()
+
+        return v

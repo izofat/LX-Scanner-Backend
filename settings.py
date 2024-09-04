@@ -17,6 +17,12 @@ assert config, "config.toml is empty, please fill it with the necessary data"
 
 ENV = "test" if pydash.get(config, "debug", True) else "prod"
 
+api_port = pydash.get(config, f"api.{ENV}.port")
+
+assert api_port, "API port not found in config.toml"
+
+input_file_path = pydash.get(config, f"input_file_path", "/srv/LX-Scanner/input")
+
 
 class MySqlConfig:
     HOST = pydash.get(config, f"db.{ENV}.host")
@@ -34,6 +40,17 @@ assert MySqlConfig.USER, "Database user not found in config.toml"
 assert MySqlConfig.PASSWORD, "Database password not found in config.toml"
 assert MySqlConfig.DATABASE, "Database name not found in config.toml"
 
-api_port = pydash.get(config, f"api.{ENV}.port")
 
-assert api_port, "API port not found in config.toml"
+class RabbitMQConfig:
+    HOST = pydash.get(config, f"rabbitmq.{ENV}.host")
+    PORT = pydash.get(config, f"rabbitmq.{ENV}.port")
+    USER = pydash.get(config, f"rabbitmq.{ENV}.username")
+    PASSWORD = pydash.get(config, f"rabbitmq.{ENV}.password")
+    QUEUE_NAME = pydash.get(config, f"rabbitmq.{ENV}.input-queue")
+
+
+assert RabbitMQConfig.HOST, "RabbitMQ host not found in config.toml"
+assert RabbitMQConfig.PORT, "RabbitMQ port not found in config.toml"
+assert RabbitMQConfig.USER, "RabbitMQ user not found in config.toml"
+assert RabbitMQConfig.PASSWORD, "RabbitMQ password not found in config.toml"
+assert RabbitMQConfig.QUEUE_NAME, "RabbitMQ queue name not found in config.toml"
