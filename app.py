@@ -7,6 +7,5 @@ app = Flask(__name__)
 
 app.register_blueprint(bp)
 
-
 if __name__ == "__main__":
-    app.run(debug=ENV, port=api_port)
+    app.run(debug=True if ENV == "dev" else False, port=api_port)
