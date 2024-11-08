@@ -25,7 +25,7 @@ def require_auth(f):
             exceptions.TokenExpired,
             exceptions.InvalidToken,
         ) as e:
-            return make_response(jsonify({"message": str(e)}), e.status_code)
+            return make_response(jsonify({"message": e.message}), e.status_code)
         except Exception:
             return make_response(jsonify({"message": "Internal server error"}), 500)
 

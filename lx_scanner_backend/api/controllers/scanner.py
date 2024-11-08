@@ -17,7 +17,7 @@ class ScannerController:  # pylint: disable=too-few-public-methods
 
             image = pydash.get(data, "image")
             language = pydash.get(data, "language")
-            expected_output = pydash.get(data, "expected_output")
+            expected_output = pydash.get(data, "expected_output", None)
 
             image = base64.b64decode(image)
 

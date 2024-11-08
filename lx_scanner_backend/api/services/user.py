@@ -64,3 +64,6 @@ class UserService:
             raise exceptions.TokenExpired() from e
         except jwt.InvalidTokenError as e:
             raise exceptions.InvalidToken() from e
+        except Exception as e:
+            logging.error("Error verifying JWT token: %s", e)
+            raise exceptions.InvalidToken() from e
