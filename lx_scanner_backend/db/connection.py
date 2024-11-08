@@ -13,13 +13,17 @@ class DbConnection:
             database=config.DATABASE,
             pool_name=config.POOL_NAME,
             pool_size=config.POOL_SIZE,
+            charset="utf8mb4",
+            collation="utf8mb4_unicode_ci",
         )
         self.conn = None
 
-    def get_connection(self):
+    def __enter__(self):
         self.conn = self.connection.get_connection()
+        return self.conn
 
-    def close_connection(self):
-        if self.conn and self.conn.is_connected():
-            self.conn.close()
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self.conn:
+            if self.conn.is_connected():
+                self.conn.close()  # This returns the connection to the pool
             self.conn = None

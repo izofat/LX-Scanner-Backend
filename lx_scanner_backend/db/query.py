@@ -9,22 +9,22 @@ class Query:
         self._create_scanner_output_table()
 
     def execute_query(self, query: str, *args, is_commit: bool = False):
-        conn = self.connection.get_connection()
-        cursor = conn.cursor(dictionary=True)
+        with self.connection as conn:
+            cursor = conn.cursor(dictionary=True)
 
-        try:
-            cursor.execute(query, (*args,))
-            if is_commit:
-                conn.commit()
-                return cursor.rowcount
+            try:
+                cursor.execute(query, (*args,))
+                if is_commit:
+                    conn.commit()
+                    return cursor.rowcount
 
-            result = cursor.fetchall()
-            return result
+                result = cursor.fetchall()
+                return result
 
-        except Exception as e:
-            raise e
-        finally:
-            cursor.close()
+            except Exception as e:
+                raise e
+            finally:
+                cursor.close()
 
     def _create_account_table(self):
         query = """
