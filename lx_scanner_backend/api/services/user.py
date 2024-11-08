@@ -1,4 +1,5 @@
 import logging
+import typing
 from datetime import datetime, timedelta
 
 import jwt
@@ -23,7 +24,7 @@ class UserService:
             raise exceptions.UserAlreadyExists()
 
     @classmethod
-    def login_user(cls, username: str, password: str) -> str:
+    def login_user(cls, username: str, password: str) -> typing.Tuple[str, datetime]:
         data = cls.query.get_user(username)
 
         if not data:
@@ -45,14 +46,14 @@ class UserService:
         return cls.generate_jwt_token(user.id)
 
     @classmethod
-    def generate_jwt_token(cls, user_id: int) -> str:
+    def generate_jwt_token(cls, user_id: int) -> typing.Tuple[str, datetime]:
         payload = {
             "user_id": user_id,
             "exp": datetime.now() + timedelta(days=1),
             "iat": datetime.now(),
         }
         token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
-        return token
+        return token, payload["exp"]
 
     @classmethod
     def verify_jwt_token(cls, token: str) -> int:

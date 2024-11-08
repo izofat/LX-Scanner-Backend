@@ -73,7 +73,7 @@ class Query:
 
     def get_user(self, username: str):
         query = """
-            SELECT username, password FROM account WHERE username = %s 
+            SELECT id, username, password FROM account WHERE username = %s 
         """
         return self.execute_query(query, username)
 

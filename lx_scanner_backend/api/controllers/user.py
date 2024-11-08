@@ -38,10 +38,17 @@ class UserController:
             username = pydash.get(data, "username")
             password = pydash.get(data, "password")
 
-            token = UserService.login_user(username, password)
+            token, exp = UserService.login_user(username, password)
 
             return make_response(
-                jsonify({"message": "Login successfully", "token": token}), 200
+                jsonify(
+                    {
+                        "message": "Login successfully",
+                        "token": token,
+                        "exp": exp.isoformat(),
+                    }
+                ),
+                200,
             )
 
         except exceptions.InvalidCredentials as e:
