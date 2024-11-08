@@ -1,7 +1,7 @@
 from .connection import DbConnection
 
 
-class Query:
+class TableQueries:
     def __init__(self):
         self.connection = DbConnection()
         self._create_account_table()
@@ -29,9 +29,11 @@ class Query:
     def _create_account_table(self):
         query = """
             CREATE TABLE IF NOT EXISTS account (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(30) NOT NULL UNIQUE,
-            password VARCHAR(300) NOT NULL
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(30) NOT NULL UNIQUE,
+                password VARCHAR(300) NOT NULL,
+                jwtToken VARCHAR(2000),
+                jwtExp DATETIME
             )
         """
         self.execute_query(query)
@@ -39,12 +41,12 @@ class Query:
     def _create_scanner_input_table(self):
         query = """
             CREATE TABLE IF NOT EXISTS scannerInput (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            userId INT,
-            expectedOutput VARCHAR(300),
-            fileName VARCHAR(300) NOT NULL,
-            inputLanguage VARCHAR(30) DEFAULT 'en',
-            FOREIGN KEY (userId) REFERENCES lxScanner.account(id)
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                userId INT,
+                expectedOutput VARCHAR(300),
+                fileName VARCHAR(300) NOT NULL,
+                inputLanguage VARCHAR(30) DEFAULT 'en',
+                FOREIGN KEY (userId) REFERENCES lxScanner.account(id)
             )
         """
         self.execute_query(query)
@@ -52,18 +54,20 @@ class Query:
     def _create_scanner_output_table(self):
         query = """
             CREATE TABLE IF NOT EXISTS scannerOutput (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            scannerInputId INT NOT NULL,
-            userId INT NOT NULL,
-            outputText VARCHAR(300),
-            confidence DECIMAL(5, 2),
-            fileName VARCHAR(100),
-            FOREIGN KEY (scannerInputId) REFERENCES scannerInput(id),
-            FOREIGN KEY (userId) REFERENCES account(id)
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                scannerInputId INT NOT NULL,
+                userId INT NOT NULL,
+                outputText VARCHAR(300),
+                confidence DECIMAL(5, 2),
+                fileName VARCHAR(100),
+                FOREIGN KEY (scannerInputId) REFERENCES scannerInput(id),
+                FOREIGN KEY (userId) REFERENCES account(id)
             )
         """
         self.execute_query(query)
 
+
+class Query(TableQueries):
     def register_account(self, username: str, password: str):
         query = """
             INSERT IGNORE INTO account (username, password)
