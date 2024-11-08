@@ -33,7 +33,7 @@ class TableQueries:
                 username VARCHAR(30) NOT NULL UNIQUE,
                 password VARCHAR(300) NOT NULL,
                 jwtToken VARCHAR(2000),
-                jwtExp DATETIME
+                jwtExpireDate DATETIME
             )
         """
         self.execute_query(query)
