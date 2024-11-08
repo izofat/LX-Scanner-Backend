@@ -41,7 +41,7 @@ class Query:
             CREATE TABLE IF NOT EXISTS scannerInput (
             id INT AUTO_INCREMENT PRIMARY KEY,
             userId INT,
-            expectedOutput VARCHAR(300) NOT NULL,
+            expectedOutput VARCHAR(300),
             fileName VARCHAR(300) NOT NULL,
             inputLanguage VARCHAR(30) DEFAULT 'en',
             FOREIGN KEY (userId) REFERENCES lxScanner.account(id)
