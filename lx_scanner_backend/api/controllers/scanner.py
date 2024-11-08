@@ -1,28 +1,31 @@
 import base64
+import logging
 
 import pydash
-from flask import request
+from flask import jsonify, make_response, request
 
+from lx_scanner_backend.api.middleware.auth import require_auth
 from lx_scanner_backend.api.services.scanner import ScannerService
 
 
 class ScannerController:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def recognize_image():
+    @require_auth
+    def scan():
         try:
             data = request.json
 
-            username = pydash.get(data, "username")
-            password = pydash.get(data, "password")
             image = pydash.get(data, "image")
             language = pydash.get(data, "language")
             expected_output = pydash.get(data, "expected_output")
 
             image = base64.b64decode(image)
 
-            ScannerService.scan(username, password, image, language, expected_output)
+            user_id = request.user_id
+            ScannerService.scan(user_id, image, language, expected_output)
 
-            return "Processing image", 200
+            return make_response(jsonify({"message": "Processing image"}), 200)
 
-        except Exception:
-            return "Internal server error", 400
+        except Exception as e:
+            logging.error(e)
+            return make_response(jsonify({"message": "Internal server error"}), 500)

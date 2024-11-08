@@ -1,6 +1,12 @@
+import logging
+from datetime import datetime, timedelta
+
+import jwt
+
 from lx_scanner_backend import exceptions
 from lx_scanner_backend.db.query import Query
 from lx_scanner_backend.models import User
+from settings import JWT_SECRET
 
 
 class UserService:
@@ -17,7 +23,7 @@ class UserService:
             raise exceptions.UserAlreadyExists()
 
     @classmethod
-    def login_user(cls, username: str, password: str):
+    def login_user(cls, username: str, password: str) -> str:
         data = cls.query.get_user(username)
 
         if not data:
@@ -32,4 +38,28 @@ class UserService:
         if not is_pw_matched:
             raise exceptions.InvalidCredentials()
 
-        return user.id
+        if user.id is None:
+            logging.error("User ID is missing check the data: %s", user.model_dump())
+            raise exceptions.InvalidCredentials("User ID is missing")
+
+        return cls.generate_jwt_token(user.id)
+
+    @classmethod
+    def generate_jwt_token(cls, user_id: int) -> str:
+        payload = {
+            "user_id": user_id,
+            "exp": datetime.now() + timedelta(days=1),
+            "iat": datetime.now(),
+        }
+        token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+        return token
+
+    @classmethod
+    def verify_jwt_token(cls, token: str) -> int:
+        try:
+            encoded_jwt = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            return encoded_jwt["user_id"]
+        except jwt.ExpiredSignatureError as e:
+            raise exceptions.TokenExpired() from e
+        except jwt.InvalidTokenError as e:
+            raise exceptions.InvalidToken() from e

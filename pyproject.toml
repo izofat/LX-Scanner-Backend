@@ -25,6 +25,7 @@ pydantic = "^2.8.2"
 bcrypt = "^4.2.0"
 pika = "^1.3.2"
 uuid = "^1.30"
+pyjwt = "^2.9.0"
 
 
 [build-system]

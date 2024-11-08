@@ -17,11 +17,16 @@ assert config, "config.toml is empty, please fill it with the necessary data"
 
 ENV = "dev" if pydash.get(config, "debug", True) else "prod"
 
-api_port = pydash.get(config, f"api.{ENV}.port")
+API_PORT = pydash.get(config, f"api.{ENV}.port")
 
-assert api_port, "API port not found in config.toml"
+assert API_PORT, "API port not found in config.toml"
 
-input_file_path = pydash.get(config, f"input_file_path", "/srv/LX-Scanner/input")
+
+JWT_SECRET = pydash.get(config, "jwt_secret")
+
+assert JWT_SECRET, "JWT secret not found in config.toml"
+
+INPUT_FILE_PATH = pydash.get(config, f"input_file_path", "/srv/LX-Scanner/input")
 
 
 class MySqlConfig:

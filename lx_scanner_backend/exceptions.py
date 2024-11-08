@@ -64,3 +64,17 @@ class InputLanguageNotExist(NotAuthenticatedException):
 
     def __init__(self, message="Input language is not exist"):
         super().__init__(message, 400)
+
+
+class TokenExpired(NotAuthenticatedException):
+    """Raised when the token is expired"""
+
+    def __init__(self, message="Token expired"):
+        super().__init__(message, 401)
+
+
+class InvalidToken(NotAuthenticatedException):
+    """Raised when the token is invalid"""
+
+    def __init__(self, message="Invalid token"):
+        super().__init__(message, 401)

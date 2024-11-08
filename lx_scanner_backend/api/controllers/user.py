@@ -1,5 +1,7 @@
+import logging
+
 import pydash
-from flask import request
+from flask import jsonify, make_response, request
 
 from lx_scanner_backend import exceptions
 from lx_scanner_backend.api.services.user import UserService
@@ -15,7 +17,7 @@ class UserController:
 
             UserService.create_user(username, password)
 
-            return "User created", 200
+            return make_response(jsonify({"message": "User created"}), 200)
 
         except (
             exceptions.UserAlreadyExists,
@@ -24,9 +26,10 @@ class UserController:
             exceptions.PasswordTooLong,
             exceptions.PasswordTooShort,
         ) as e:
-            return e.message, e.status_code
-        except Exception:
-            return "Internal server error", 400
+            return make_response(e.message, e.status_code)
+        except Exception as e:
+            logging.error(e)
+            return make_response(jsonify({"message": "Internal server error"}), 500)
 
     @staticmethod
     def login_user():
@@ -35,11 +38,14 @@ class UserController:
             username = pydash.get(data, "username")
             password = pydash.get(data, "password")
 
-            UserService.login_user(username, password)
+            token = UserService.login_user(username, password)
 
-            return "Login successfully", 200
+            return make_response(
+                jsonify({"message": "Login successfully", "token": token}), 200
+            )
 
         except exceptions.InvalidCredentials as e:
-            return e.message, e.status_code
-        except Exception:
-            return "Internal server error", 400
+            return make_response(e.message, e.status_code)
+        except Exception as e:
+            logging.error(e)
+            return make_response(jsonify({"message": "Internal server error"}), 500)
