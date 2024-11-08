@@ -5,6 +5,9 @@ description = ""
 authors = ["izofat <gorkemkacar12@gmail.com>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+lx-scanner-backend = "app:app"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 mypy = "^1.11.2"

@@ -17,9 +17,7 @@ class DbConnection:
         self.conn = None
 
     def get_connection(self):
-        if self.conn is None or not self.conn.is_connected():
-            self.conn = self.connection.get_connection()
-        return self.conn
+        self.conn = self.connection.get_connection()
 
     def close_connection(self):
         if self.conn and self.conn.is_connected():
