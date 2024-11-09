@@ -1,12 +1,12 @@
 import logging
 import typing
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import jwt
 
 from lx_scanner_backend import exceptions
 from lx_scanner_backend.db.query import Query
-from lx_scanner_backend.models import User
+from lx_scanner_backend.models import JwtTokenDecoded, JwtTokenEncoded, User
 from settings import JWT_SECRET
 
 
@@ -47,19 +47,45 @@ class UserService:
 
     @classmethod
     def generate_jwt_token(cls, user_id: int) -> typing.Tuple[str, datetime]:
-        payload = {
-            "user_id": user_id,
-            "exp": datetime.now() + timedelta(days=1),
-            "iat": datetime.now(),
-        }
-        token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
-        return token, payload["exp"]
+        token_record = cls.query.get_token(user_id)
+
+        if (
+            token_record
+            and (token_record := token_record[0])
+            and token_record["jwtExpireDate"].replace(tzinfo=UTC) - datetime.now(UTC)
+            > timedelta(hours=1)
+        ):
+            return token_record["jwtToken"], token_record["jwtExpireDate"]
+
+        now = datetime.now(UTC)
+        exp = now + timedelta(days=1)
+
+        payload = JwtTokenDecoded(user_id=user_id, exp=exp, iat=now)
+
+        token = jwt.encode(payload.model_dump(), JWT_SECRET, algorithm="HS256")
+
+        cls.query.insert_token(user_id, token, exp)
+
+        return token, exp
 
     @classmethod
     def verify_jwt_token(cls, token: str) -> int:
         try:
-            encoded_jwt = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-            return encoded_jwt["user_id"]
+            decoded_jwt = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            decoded_jwt = JwtTokenDecoded(**decoded_jwt)
+
+            token_data = cls.query.get_token(decoded_jwt.user_id)
+            if not token_data:
+                raise exceptions.FirstLoginRequired()
+
+            token_data = token_data[0]
+            encoded_jwt = JwtTokenEncoded(**token_data)
+
+            if token != encoded_jwt.token:
+                raise exceptions.TokenNotMatch()
+
+            return encoded_jwt.user_id
+
         except jwt.ExpiredSignatureError as e:
             raise exceptions.TokenExpired() from e
         except jwt.InvalidTokenError as e:

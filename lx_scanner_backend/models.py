@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 import bcrypt
@@ -60,3 +61,16 @@ class ScannerInput(BaseModel):
             raise exceptions.InputLanguageNotExist()
 
         return v
+
+
+class JwtTokenDecoded(BaseModel):
+    user_id: int
+    exp: datetime
+    iat: datetime
+
+
+class JwtTokenEncoded(BaseModel):
+    id: int
+    user_id: int
+    token: str
+    expire_date: datetime

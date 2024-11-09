@@ -1,12 +1,15 @@
+from datetime import datetime
+
 from .connection import DbConnection
 
 
-class TableQueries:
+class TableQueries:  # pylint: disable=too-few-public-methods
     def __init__(self):
         self.connection = DbConnection()
         self._create_account_table()
         self._create_scanner_input_table()
         self._create_scanner_output_table()
+        self._create_token_table()
 
     def execute_query(self, query: str, *args, is_commit: bool = False):
         with self.connection as conn:
@@ -31,9 +34,7 @@ class TableQueries:
             CREATE TABLE IF NOT EXISTS account (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 username VARCHAR(30) NOT NULL UNIQUE,
-                password VARCHAR(300) NOT NULL,
-                jwtToken VARCHAR(2000),
-                jwtExpireDate DATETIME
+                password VARCHAR(300) NOT NULL
             )
         """
         self.execute_query(query)
@@ -66,6 +67,18 @@ class TableQueries:
         """
         self.execute_query(query)
 
+    def _create_token_table(self):
+        query = """
+            CREATE TABLE IF NOT EXISTS token (
+                id INT AUTO_INCREMENT PRIMARY KEY,  
+                userId INT NOT NULL,
+                jwtToken VARCHAR(2000) NOT NULL,
+                jwtExpireDate DATETIME NOT NULL,
+                FOREIGN KEY (userId) REFERENCES account(id)
+            )
+        """
+        self.execute_query(query)
+
 
 class Query(TableQueries):
     def register_account(self, username: str, password: str):
@@ -81,12 +94,6 @@ class Query(TableQueries):
         """
         return self.execute_query(query, username)
 
-    def get_user_id(self, username: str):
-        query = """
-            SELECT id FROM account WHERE username = %s AND password = %s
-        """
-        return self.execute_query(query, username)
-
     def insert_scanner_input(
         self, user_id: int, expected_output: str, file_Name: str, input_language: str
     ):
@@ -97,3 +104,21 @@ class Query(TableQueries):
         return self.execute_query(
             query, user_id, expected_output, file_Name, input_language, is_commit=True
         )
+
+    def insert_token(self, user_id: int, jwt_token: str, jwt_expire_date: datetime):
+        query = """
+            INSERT INTO token (userId, jwtToken, jwtExpireDate)
+            VALUES (%s, %s, %s)
+        """
+        return self.execute_query(
+            query, user_id, jwt_token, jwt_expire_date, is_commit=True
+        )
+
+    def get_token(self, user_id: int):
+        query = """
+            SELECT jwtToken, jwtExpireDate FROM token 
+            WHERE userId = %s
+            ORDER BY jwtExpireDate DESC
+            LIMIT 1
+        """
+        return self.execute_query(query, user_id)

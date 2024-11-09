@@ -78,3 +78,17 @@ class InvalidToken(NotAuthenticatedException):
 
     def __init__(self, message="Invalid token"):
         super().__init__(message, 401)
+
+
+class FirstLoginRequired(NotAuthenticatedException):
+    """Raised when the user is first login"""
+
+    def __init__(self, message="To use this service, please login first"):
+        super().__init__(message, 401)
+
+
+class TokenNotMatch(NotAuthenticatedException):
+    """Raised when the token is not match"""
+
+    def __init__(self, message="Token is not matched, check your token"):
+        super().__init__(message, 401)
