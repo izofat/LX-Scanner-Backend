@@ -4,11 +4,13 @@ import pydash
 from flask import jsonify, make_response, request
 
 from lx_scanner_backend import exceptions
+from lx_scanner_backend.api.middleware.validation import auth_request
 from lx_scanner_backend.api.services.user import UserService
 
 
 class UserController:
     @staticmethod
+    @auth_request
     def create_user():
         try:
             data = request.json
@@ -32,6 +34,7 @@ class UserController:
             return make_response(jsonify({"message": "Internal server error"}), 500)
 
     @staticmethod
+    @auth_request
     def login_user():
         try:
             data = request.json
