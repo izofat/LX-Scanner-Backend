@@ -71,6 +71,6 @@ class JwtTokenDecoded(BaseModel):
 
 class JwtTokenEncoded(BaseModel):
     id: int
-    user_id: int
-    token: str
-    expire_date: datetime
+    userId: int
+    jwtToken: str
+    jwtExpireDate: datetime

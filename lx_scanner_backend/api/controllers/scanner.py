@@ -1,11 +1,11 @@
 import base64
-import logging
 
 import pydash
 from flask import jsonify, make_response, request
 
 from lx_scanner_backend.api.middleware.auth import require_auth
 from lx_scanner_backend.api.services.scanner import ScannerService
+from lx_scanner_backend.logger import Logger
 
 
 class ScannerController:  # pylint: disable=too-few-public-methods
@@ -27,5 +27,5 @@ class ScannerController:  # pylint: disable=too-few-public-methods
             return make_response(jsonify({"message": "Processing image"}), 200)
 
         except Exception as e:
-            logging.error(e)
+            Logger.error(e)
             return make_response(jsonify({"message": "Internal server error"}), 500)

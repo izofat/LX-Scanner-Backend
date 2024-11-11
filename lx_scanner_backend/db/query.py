@@ -116,7 +116,7 @@ class Query(TableQueries):
 
     def get_token(self, user_id: int):
         query = """
-            SELECT jwtToken, jwtExpireDate FROM token 
+            SELECT id, userId, jwtToken, jwtExpireDate FROM token 
             WHERE userId = %s
             ORDER BY jwtExpireDate DESC
             LIMIT 1

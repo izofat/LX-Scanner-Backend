@@ -1,4 +1,3 @@
-import logging
 import typing
 from datetime import UTC, datetime, timedelta
 
@@ -6,6 +5,7 @@ import jwt
 
 from lx_scanner_backend import exceptions
 from lx_scanner_backend.db.query import Query
+from lx_scanner_backend.logger import Logger
 from lx_scanner_backend.models import JwtTokenDecoded, JwtTokenEncoded, User
 from settings import JWT_SECRET
 
@@ -40,7 +40,7 @@ class UserService:
             raise exceptions.InvalidCredentials()
 
         if user.id is None:
-            logging.error("User ID is missing check the data: %s", user.model_dump())
+            Logger.info("User ID is missing check the data: %s", user.model_dump())
             raise exceptions.InvalidCredentials("User ID is missing")
 
         return cls.generate_jwt_token(user.id)
@@ -81,15 +81,15 @@ class UserService:
             token_data = token_data[0]
             encoded_jwt = JwtTokenEncoded(**token_data)
 
-            if token != encoded_jwt.token:
+            if token != encoded_jwt.jwtToken:
                 raise exceptions.TokenNotMatch()
 
-            return encoded_jwt.user_id
+            return encoded_jwt.userId
 
         except jwt.ExpiredSignatureError as e:
             raise exceptions.TokenExpired() from e
         except jwt.InvalidTokenError as e:
             raise exceptions.InvalidToken() from e
         except Exception as e:
-            logging.error("Error verifying JWT token: %s", e)
+            Logger.error(e)
             raise exceptions.InvalidToken() from e
