@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from .connection import DbConnection
 
@@ -95,14 +96,18 @@ class Query(TableQueries):
         return self.execute_query(query, username)
 
     def insert_scanner_input(
-        self, user_id: int, expected_output: str, file_Name: str, input_language: str
+        self,
+        user_id: int,
+        expected_output: Optional[str],
+        file_name: str,
+        input_language: str,
     ):
         query = """
             INSERT INTO scannerInput (userId, expectedOutput, fileName, inputLanguage)
             VALUES (%s, %s, %s)
         """
         return self.execute_query(
-            query, user_id, expected_output, file_Name, input_language, is_commit=True
+            query, user_id, expected_output, file_name, input_language, is_commit=True
         )
 
     def insert_token(self, user_id: int, jwt_token: str, jwt_expire_date: datetime):

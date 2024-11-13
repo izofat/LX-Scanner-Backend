@@ -1,7 +1,8 @@
-import base64
+from typing import Optional
 
 import pydash
 from flask import jsonify, make_response, request
+from werkzeug.datastructures import FileStorage
 
 from lx_scanner_backend.api.middleware.auth import require_auth
 from lx_scanner_backend.api.services.scanner import ScannerService
@@ -13,16 +14,20 @@ class ScannerController:  # pylint: disable=too-few-public-methods
     @require_auth
     def scan():
         try:
-            data = request.json
+            data = request.form
+            files = request.files
 
-            image = pydash.get(data, "image")
-            language = pydash.get(data, "language")
-            expected_output = pydash.get(data, "expected_output", None)
+            image: FileStorage = pydash.get(files, "image")
+            input_language: str = pydash.get(data, "input_language")
+            expected_output: Optional[str] = pydash.get(data, "expected_output", None)
 
-            image = base64.b64decode(image)
+            if not image or not input_language:
+                return make_response(
+                    jsonify({"message": "Image and language are required"}), 400
+                )
 
             user_id = request.user_id
-            ScannerService.scan(user_id, image, language, expected_output)
+            ScannerService.scan(user_id, image, input_language, expected_output)
 
             return make_response(jsonify({"message": "Processing image"}), 200)
 

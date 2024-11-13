@@ -1,4 +1,7 @@
 import uuid
+from typing import Optional
+
+from werkzeug.datastructures import FileStorage
 
 from lx_scanner_backend.db.query import Query
 from lx_scanner_backend.rabbbitmq.connection import RabbitMQConnection
@@ -11,14 +14,19 @@ class ScannerService:
 
     @classmethod
     def scan(
-        cls, user_id, image, language, expected_output
+        cls,
+        user_id,
+        image: FileStorage,
+        input_language: str,
+        expected_output: Optional[str],
     ):  # pylint: disable=too-many-arguments
         image_path = f"{INPUT_FILE_PATH}/{uuid.uuid4()}.jpg"
 
-        with open(image_path, "wb") as f:
-            f.write(image)
+        image.save(image_path)
 
-        cls.query.insert_scanner_input(user_id, image_path, language, expected_output)
+        cls.query.insert_scanner_input(
+            user_id, expected_output, image_path, input_language
+        )
 
         # TODO send image to rabbitmq
 
