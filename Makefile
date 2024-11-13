@@ -4,7 +4,7 @@ PROJECT_NAME := LX-Scanner-Backend
 POETRY := ~/.local/bin/poetry
 
 launch:
-	@poetry run python app.py
+	@poetry run python main.py
 
 install:
 	@poetry install
