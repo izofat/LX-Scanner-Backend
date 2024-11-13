@@ -26,7 +26,11 @@ JWT_SECRET = pydash.get(config, "jwt_secret")
 
 assert JWT_SECRET, "JWT secret not found in config.toml"
 
-INPUT_FILE_PATH = pydash.get(config, f"input_file_path", "~/LX-Scanner/input")
+input_folder = pydash.get(config, f"input_file_path")
+
+assert input_folder, "Input file path not found in config.toml"
+
+INPUT_FILE_PATH = os.path.expanduser(input_folder)
 
 
 class MySqlConfig:
