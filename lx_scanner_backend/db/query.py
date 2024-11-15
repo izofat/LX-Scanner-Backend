@@ -48,6 +48,8 @@ class TableQueries:  # pylint: disable=too-few-public-methods
                 expectedOutput VARCHAR(300),
                 fileName VARCHAR(300) NOT NULL,
                 inputLanguage VARCHAR(30) DEFAULT 'en',
+                status ENUM('pending', 'processing', 'completed', 'failed')
+                DEFAULT 'pending' NOT NULL,
                 FOREIGN KEY (userId) REFERENCES lxScanner.account(id)
             )
         """
