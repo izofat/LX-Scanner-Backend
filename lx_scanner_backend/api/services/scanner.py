@@ -21,7 +21,7 @@ class ScannerService:
         image: FileStorage,
         input_language: str,
         expected_output: Optional[str],
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
         image_path = f"{INPUT_FILE_PATH}/{uuid.uuid4()}.jpg"
 
         image.save(image_path)
