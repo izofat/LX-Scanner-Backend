@@ -101,6 +101,7 @@ class Query(TableQueries):
     def insert_scanner_input(
         self,
         user_id: int,
+        name: Optional[str],
         expected_output: Optional[str],
         file_name: str,
         input_language: str,
@@ -110,7 +111,13 @@ class Query(TableQueries):
             VALUES (%s, %s, %s, %s, %s)
         """
         return self.execute_query(
-            query, user_id, expected_output, file_name, input_language, is_commit=True
+            query,
+            user_id,
+            name,
+            expected_output,
+            file_name,
+            input_language,
+            is_commit=True,
         )
 
     def insert_token(self, user_id: int, jwt_token: str, jwt_expire_date: datetime):
