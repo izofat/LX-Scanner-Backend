@@ -106,7 +106,7 @@ class Query(TableQueries):
     ):
         query = """
             INSERT INTO scannerInput (userId, expectedOutput, fileName, inputLanguage)
-            VALUES (%s, %s, %s)
+            VALUES (%s, %s, %s, %s)
         """
         return self.execute_query(
             query, user_id, expected_output, file_name, input_language, is_commit=True
