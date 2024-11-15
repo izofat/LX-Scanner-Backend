@@ -106,8 +106,8 @@ class Query(TableQueries):
         input_language: str,
     ):
         query = """
-            INSERT INTO scannerInput (userId, expectedOutput, fileName, inputLanguage)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO scannerInput (userId, name, expectedOutput, fileName, inputLanguage)
+            VALUES (%s, %s, %s, %s, %s)
         """
         return self.execute_query(
             query, user_id, expected_output, file_name, input_language, is_commit=True

@@ -16,6 +16,7 @@ class ScannerService:
     def scan(
         cls,
         user_id,
+        name: Optional[str],
         image: FileStorage,
         input_language: str,
         expected_output: Optional[str],
@@ -25,7 +26,7 @@ class ScannerService:
         image.save(image_path)
 
         cls.query.insert_scanner_input(
-            user_id, expected_output, image_path, input_language
+            user_id, name, expected_output, image_path, input_language
         )
 
         # TODO send image to rabbitmq

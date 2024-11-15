@@ -18,6 +18,7 @@ class ScannerController:  # pylint: disable=too-few-public-methods
             files = request.files
 
             image: FileStorage = pydash.get(files, "image")
+            name: Optional[str] = pydash.get(data, "name", None)
             input_language: str = pydash.get(data, "input_language")
             expected_output: Optional[str] = pydash.get(data, "expected_output", None)
 
@@ -27,9 +28,9 @@ class ScannerController:  # pylint: disable=too-few-public-methods
                 )
 
             user_id = request.user_id
-            ScannerService.scan(user_id, image, input_language, expected_output)
+            ScannerService.scan(user_id, name, image, input_language, expected_output)
 
-            return make_response(jsonify({"message": "Processing image"}), 200)
+            return make_response(jsonify({"message": "Image added to queue"}), 200)
 
         except Exception as e:
             Logger.error(e)
