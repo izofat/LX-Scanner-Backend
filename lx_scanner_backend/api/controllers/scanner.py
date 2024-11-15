@@ -32,6 +32,9 @@ class ScannerController:  # pylint: disable=too-few-public-methods
 
             return make_response(jsonify({"message": "Image added to queue"}), 200)
 
+        except IOError as e:
+            Logger.error(e)
+            return make_response(jsonify({"message": "Failed to save image"}), 500)
         except Exception as e:
             Logger.error(e)
             return make_response(jsonify({"message": "Internal server error"}), 500)

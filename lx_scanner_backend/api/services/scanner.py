@@ -1,6 +1,7 @@
 import uuid
 from typing import Optional
 
+from flask import json
 from werkzeug.datastructures import FileStorage
 
 from lx_scanner_backend.db.query import Query
@@ -29,12 +30,12 @@ class ScannerService:
             user_id, name, expected_output, image_path, input_language
         )
 
-        # TODO send image to rabbitmq
-
-    def send_image_to_rabbitmq(
-        self,
-        user_id,
-        image_path,
-        language,
-    ):
-        pass
+        cls.rabbit_mq.publish(
+            json.dumps(
+                {
+                    "user_id": user_id,
+                    "image_path": image_path,
+                    "language": input_language,
+                }
+            )
+        )
