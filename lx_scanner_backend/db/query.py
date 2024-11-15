@@ -167,13 +167,11 @@ class Query:
         self._select = SelectQueries(self.connection)
         self._insert = InsertQueries(self.connection)
 
-        # Create tables
         self._tables.create_account_table()
         self._tables.create_scanner_input_table()
         self._tables.create_scanner_output_table()
         self._tables.create_token_table()
 
-    # Select methods
     def get_user(self, username: str):
         return self._select.get_user(username)
 
@@ -189,7 +187,6 @@ class Query:
     def get_image_by_name(self, image_name: str):
         return self._select.get_image_by_name(image_name)
 
-    # Insert methods
     def register_account(self, username: str, password: str):
         return self._insert.register_account(username, password)
 
