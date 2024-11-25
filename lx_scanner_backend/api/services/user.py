@@ -60,7 +60,7 @@ class UserService:
         now = datetime.now(UTC)
         exp = now + timedelta(days=1)
 
-        payload = JwtTokenDecoded(user_id=user_id, exp=exp, iat=now)
+        payload = JwtTokenDecoded(userId=user_id, exp=exp, iat=now)
 
         token = jwt.encode(payload.model_dump(), JWT_SECRET, algorithm="HS256")
 
@@ -74,7 +74,7 @@ class UserService:
             decoded_jwt = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
             decoded_jwt = JwtTokenDecoded(**decoded_jwt)
 
-            token_data = cls.query.get_token(decoded_jwt.user_id)
+            token_data = cls.query.get_token(decoded_jwt.userId)
             if not token_data:
                 raise exceptions.FirstLoginRequired()
 

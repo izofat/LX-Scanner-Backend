@@ -64,7 +64,7 @@ class ScannerInput(BaseModel):
 
 
 class JwtTokenDecoded(BaseModel):
-    user_id: int
+    userId: int
     exp: datetime
     iat: datetime
 
