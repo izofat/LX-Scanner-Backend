@@ -42,14 +42,27 @@ class ScannerController:  # pylint: disable=too-few-public-methods
     @staticmethod
     @require_auth
     def get_all_images():
-        pass
+        try:
+            user_id = request.user_id
+            return ScannerService.get_all_images(user_id)
+        except Exception as e:
+            Logger.error(e)
+            return make_response(jsonify({"message": "Internal server error"}), 500)
 
     @staticmethod
     @require_auth
     def get_image_by_id(image_id: int):
-        pass
+        try:
+            return ScannerService.get_image_by_id(image_id)
+        except Exception as e:
+            Logger.error(e)
+            return make_response(jsonify({"message": "Internal server error"}), 500)
 
     @staticmethod
     @require_auth
     def get_image_by_name(image_name: str):
-        pass
+        try:
+            return ScannerService.get_image_by_name(image_name)
+        except Exception as e:
+            Logger.error(e)
+            return make_response(jsonify({"message": "Internal server error"}), 500)

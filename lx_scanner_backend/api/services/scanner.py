@@ -39,3 +39,15 @@ class ScannerService:
                 }
             )
         )
+
+    @classmethod
+    def get_all_images(cls, user_id: int):
+        return cls.query.get_all_images(user_id)
+
+    @classmethod
+    def get_image_by_id(cls, image_id: int):
+        return cls.query.get_image_by_id(image_id)
+
+    @classmethod
+    def get_image_by_name(cls, image_name: str):
+        return cls.query.get_image_by_name(image_name)
